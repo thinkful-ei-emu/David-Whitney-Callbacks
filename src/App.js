@@ -41,15 +41,35 @@ class App extends Component {
     },
   }
 
-  deleteCard = (cardId) => {
-    console.log('deleteCardRan')
-    console.log(id)
-    this.SetState({
-      lists: this.state.lists.filter(
-        list => list.cardIds !== id 
-      )})  
+  //Provided by checkpoint
+  omit (obj, keyToOmit) {
+    return Object.entries(obj).reduce(
+      (newObj, [key, value]) =>
+          key === keyToOmit ? newObj : {...newObj, [key]: value},
+      {}
+    );
   }
 
+  //Deletes all instances of the card selected in lists, removes from allCards, updates state
+  deleteCard = (cardId) => {
+    //Removes all instances of selected card from all lists
+    const newLists = this.state.lists.map(list => ({
+      id: list.id,
+      header: list.header,
+      cardIds: list.cardIds.filter(id => id !== cardId)
+    }));
+
+    //Removes selected card from allCards
+    const newAllCards = this.omit(this.state.allCards, cardId)
+
+    //updates state
+    this.setState({
+        lists: newLists,
+        allCards: newAllCards
+    })
+  }
+
+  //Provided by checkpoint
   newRandomCard = () => {
     const id = Math.random().toString(36).substring(2, 4)
       + Math.random().toString(36).substring(2, 4);
@@ -60,7 +80,42 @@ class App extends Component {
     }
   }
 
+  //generates new random card, adds cardId to correct list, adds card to allCards, updates state
+  addCard = (id) => {
+    //generates new random card
+    const newCard = this.newRandomCard();
+    console.log(newCard);
+
+    //adds card to correct list
+    const addedNewCardLists = this.state.lists.map(list => {
+      if (list.id === id) {
+        return {
+          id: list.id,
+          header: list.header,
+          cardIds: [...list.cardIds, newCard.id] //list.cardIds.append(newCard.id)
+        }
+      }
+      return list; // DON'T FORGET TO RETURN THE LIST!
+    })
+    //console.log(addedNewCardLists);
+
+
+    //update state
+    this.setState({
+      lists: addedNewCardLists,
+      allCards: {
+        ...this.state.allCards,
+        //adds card to allCards
+        [newCard.id]: newCard
+      }
+    })
+  }
+
+
+
   render() {
+    console.log(this.state.allCards);
+
     return (
       <main className='App'>
         <header className='App-header'>
@@ -69,11 +124,12 @@ class App extends Component {
         <div className='App-list'>
           {this.state.lists.map(list => (
             <List
+              id={list.id}
               key={list.id}
               header={list.header}
               cards={list.cardIds.map(id => this.state.allCards[id])}
-              present= {this.deleteCard}
-              newCard= {this.newRandomCard}
+              handleDelete= {this.deleteCard}
+              handleNewCard= {this.addCard}
             />
           ))}
         </div>

@@ -3,13 +3,10 @@ import './Card.css';
 
 
 export default function Card(props) {
-  console.log("Next is props!")
-  console.log(props.present)
-
   return (
     <div className='Card'>
       <button
-        type='button' onClick = {props.present} 
+        type='button' onClick = {() => props.handleDelete(props.id)} 
       >
         delete
       </button>
