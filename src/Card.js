@@ -1,11 +1,15 @@
 import React from 'react';
 import './Card.css';
 
+
 export default function Card(props) {
+  console.log("Next is props!")
+  console.log(props.present)
+
   return (
     <div className='Card'>
       <button
-        type='button'
+        type='button' onClick = {props.present} 
       >
         delete
       </button>
