@@ -93,6 +93,7 @@ class App extends Component {
           id: list.id,
           header: list.header,
           cardIds: [...list.cardIds, newCard.id] //list.cardIds.append(newCard.id)
+          //Look up how JSX uses the spread operator; virtual DOM; 
         }
       }
       return list; // DON'T FORGET TO RETURN THE LIST!
